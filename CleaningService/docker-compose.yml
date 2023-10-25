@@ -1,0 +1,32 @@
+﻿volumes:
+  postgres-data: { }
+networks:
+  stack: { }
+services:
+  cleaningservice:
+    image: cleaningservice
+    build:
+      context: .
+      dockerfile: CleaningService.Api/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on: 
+      - postgres
+    networks:
+      - stack
+    environment:
+      - .env
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: tibber
+      POSTGRES_PASSWORD: tibber
+      POSTGRES_DB: tibber
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./CleaningService.Data/Migration/V0__init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - stack
