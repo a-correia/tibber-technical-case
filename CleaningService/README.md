@@ -84,7 +84,7 @@ Swagger: http://localhost:5000/swagger/index.html
 
 This was the first time I worked with .NET. I decided to do it as a learning exercise and tried to follow good practices and conventions.
 
-I used the Rider IDE on an Intel Macbook. I didn't have the opportunity to test it in different architectures/operation systems but please let me know if you have any problem or question.
+I used the Rider IDE on an Intel Macbook. I didn't have the opportunity to test it in a different architectures/operation systems but please let me know if you have any problem or question.
 
 ## TODO
 - Add integration tests using Docker.
