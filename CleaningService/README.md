@@ -90,5 +90,6 @@ I used the Rider IDE on an Intel Macbook. I didn't have the opportunity to test 
 - Add integration tests using Docker.
 - Improve logging
 - Improve docs and error handling
+- Async calls
     
     
