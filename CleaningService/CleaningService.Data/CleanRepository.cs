@@ -1,8 +1,8 @@
 using CleaningService.Repositories.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace CleaningService.Repositories;
-using System.Linq;
 
 public class CleanRepository : ICleanRepository
 {
@@ -10,30 +10,29 @@ public class CleanRepository : ICleanRepository
     private readonly ILogger<CleanRepository> _logger;
 
 
-    public CleanRepository(AppDbContext context,  ILogger<CleanRepository> logger)
+    public CleanRepository(AppDbContext context, ILogger<CleanRepository> logger)
     {
         _context = context;
         _logger = logger;
-
     }
 
-    public CleaningRecord? AddCleaningRecord(CleaningRecord? record)
+    public async Task<CleaningRecord?> AddCleaningRecord(CleaningRecord? record)
     {
         _context.CleaningRecords.Add(record);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         _logger.LogInformation($"Cleaning execution record added successfully");
         return record;
     }
 
-    public List<CleaningRecord> GetAllCleaningRecords()
+    public async Task<List<CleaningRecord>> GetAllCleaningRecords()
     {
         _logger.LogInformation("Retrieving all cleaning records");
-        return _context.CleaningRecords.ToList();
+        return await _context.CleaningRecords.ToListAsync();
     }
 
-    public CleaningRecord GetCleaningRecordById(int id)
+    public async Task<CleaningRecord> GetCleaningRecordById(int id)
     {
         _logger.LogInformation("Retrieving cleaning record by ID: {RecordId}", id);
-        return _context.CleaningRecords.SingleOrDefault(record => record.Id == id);
+        return await _context.CleaningRecords.SingleOrDefaultAsync(record => record.Id == id);
     }
 }

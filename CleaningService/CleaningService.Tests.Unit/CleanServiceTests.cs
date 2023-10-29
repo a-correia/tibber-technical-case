@@ -15,7 +15,7 @@ using Xunit;
 public class CleanServiceTests
 {
     [Fact]
-    public void Clean_Should_Return_CleaningRecord()
+    public async void Clean_Should_Return_CleaningRecord()
     {
         // Arrange
         var cleanRepositoryMock = new Mock<ICleanRepository>();
@@ -34,11 +34,11 @@ public class CleanServiceTests
             }
         };
         cleanRepositoryMock.Setup(repo => repo.AddCleaningRecord(It.IsAny<CleaningRecord>()))
-            .Returns((CleaningRecord record) => record);
+            .ReturnsAsync((CleaningRecord record) => record);
 
         mapperMock.Setup(x => x.Map<CleanOutput>(It.IsAny<CleaningRecord>())).Returns(expectedOutput);
         // Act
-        var result = cleanService.Clean(cleanInput);
+        var result = await cleanService.Clean(cleanInput);
 
         // Assert
         Assert.NotNull(result);

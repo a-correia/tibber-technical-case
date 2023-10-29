@@ -24,7 +24,7 @@ public class CleanController : ControllerBase
     }
 
     [HttpPost("enter-path")]
-    public IActionResult EnterPath([FromBody] CleanRequestDto requestDto)
+    public async Task<IActionResult> EnterPath([FromBody] CleanRequestDto requestDto)
     {
         if (!ModelState.IsValid)
         {
@@ -33,7 +33,7 @@ public class CleanController : ControllerBase
 
         try
         {
-            var cleanOutput = _cleanService.Clean(_mapper.Map<CleanInput>(requestDto));
+            var cleanOutput = await _cleanService.Clean(_mapper.Map<CleanInput>(requestDto));
             return Ok(_mapper.Map<CleanResponseDto>(cleanOutput));
         }
         catch (Exception ex)
@@ -44,7 +44,7 @@ public class CleanController : ControllerBase
     }
 
     [HttpGet("clean-record/{recordId}")]
-    public IActionResult GetCleanRecord(int recordId)
+    public async Task<IActionResult> GetCleanRecord(int recordId)
     {
         if (!ModelState.IsValid)
         {
@@ -53,7 +53,7 @@ public class CleanController : ControllerBase
 
         try
         {
-            var cleanOutput = _cleanService.GetCleanRecordById(recordId);
+            var cleanOutput = await _cleanService.GetCleanRecordById(recordId);
             if (cleanOutput != null)
             {
                 return Ok(_mapper.Map<CleanResponseDto>(cleanOutput));
@@ -69,7 +69,7 @@ public class CleanController : ControllerBase
     }
 
     [HttpGet("clean-records")]
-    public IActionResult GetAllCleanRecords()
+    public async Task<ObjectResult> GetAllCleanRecords()
     {
         if (!ModelState.IsValid)
         {
@@ -78,7 +78,7 @@ public class CleanController : ControllerBase
 
         try
         {
-            List<CleanOutput> cleanOutputs = _cleanService.GetCleanRecords();
+            var cleanOutputs = await _cleanService.GetCleanRecords();
             return Ok(_mapper.Map<List<CleanResponseDto>>(cleanOutputs));
         }
         catch (Exception ex)

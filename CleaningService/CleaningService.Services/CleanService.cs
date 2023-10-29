@@ -23,7 +23,7 @@ public class CleanService : ICleanService
         _logger = logger;
     }
 
-    public CleanOutput Clean(CleanInput cleanInput)
+    public async Task<CleanOutput> Clean(CleanInput cleanInput)
     {
         _logger.LogInformation("Starting cleaning");
         var stopwatch = new Stopwatch();
@@ -36,22 +36,24 @@ public class CleanService : ICleanService
         var duration = Math.Round(stopwatch.Elapsed.TotalSeconds, 6);
         var cleaningRecord = new CleaningRecord(cleanInput.Commands.Count, DateTime.UtcNow, nPlaces, duration);
 
-        var record = _cleanRepository.AddCleaningRecord(cleaningRecord);
+        var record = await _cleanRepository.AddCleaningRecord(cleaningRecord);
         _logger.LogInformation("Cleaning completed successfully in {Duration}", duration);
 
         return _mapper.Map<CleanOutput>(record);
     }
 
-    public List<CleanOutput> GetCleanRecords()
+    public async Task<List<CleanOutput>> GetCleanRecords()
     {
         _logger.LogInformation("Getting all cleaning records");
-        return _mapper.Map<List<CleanOutput>>(_cleanRepository.GetAllCleaningRecords());
+        var cleanOutputs = await _cleanRepository.GetAllCleaningRecords();
+        return _mapper.Map<List<CleanOutput>>(cleanOutputs);
     }
 
-    public CleanOutput GetCleanRecordById(int id)
+    public async Task<CleanOutput> GetCleanRecordById(int id)
     {
         _logger.LogInformation("Getting cleaning record by ID: {RecordId}", id);
-        return _mapper.Map<CleanOutput>(_cleanRepository.GetCleaningRecordById(id));
+        var cleaningRecordById = await _cleanRepository.GetCleaningRecordById(id);
+        return _mapper.Map<CleanOutput>(cleaningRecordById);
     }
 
     public int SimulateCleaning(Coordinates start, List<Command> commands)

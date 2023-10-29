@@ -4,9 +4,9 @@ namespace CleaningService.Repositories;
 
 public interface ICleanRepository
 {
-    CleaningRecord? AddCleaningRecord(CleaningRecord? record);
+    public Task<CleaningRecord?> AddCleaningRecord(CleaningRecord? record);
 
-    public List<CleaningRecord> GetAllCleaningRecords();
+    public Task<List<CleaningRecord>> GetAllCleaningRecords();
 
-    public CleaningRecord GetCleaningRecordById(int id);
+    public Task<CleaningRecord> GetCleaningRecordById(int id);
 }
