@@ -23,7 +23,8 @@ public class CleanServiceTests
 
         var expectedOutput = new CleanOutput(2, System.DateTime.Now, 4, 0.000123);
 
-        var cleanService = new CleanService(cleanRepositoryMock.Object, mapperMock.Object, Mock.Of<ILogger<CleanService>>());
+        var cleanService =
+            new CleanService(cleanRepositoryMock.Object, mapperMock.Object, Mock.Of<ILogger<CleanService>>());
         var cleanInput = new CleanInput()
         {
             Start = new Coordinates() { X = 10, Y = 22 },
@@ -54,16 +55,17 @@ public class CleanServiceTests
     }
 
     [Fact]
-    public void SimulateCleaning_Should_Return_Result()
+    public void SimulateCleaning_CircularPath()
     {
         // Arrange
         var cleanRepositoryMock = new Mock<ICleanRepository>();
-        var cleanService = new CleanService(cleanRepositoryMock.Object, Mock.Of<IMapper>(), Mock.Of<ILogger<CleanService>>());
+        var cleanService = new CleanService(cleanRepositoryMock.Object, Mock.Of<IMapper>(),
+            Mock.Of<ILogger<CleanService>>());
         var start = new Coordinates { X = 0, Y = 0 };
         var commands = new List<Command>
         {
             new Command { Direction = Domain.Model.DirectionEnum.North, Steps = 1 },
-            new Command { Direction = Domain.Model.DirectionEnum.East, Steps = 1 }, 
+            new Command { Direction = Domain.Model.DirectionEnum.East, Steps = 1 },
             new Command { Direction = Domain.Model.DirectionEnum.South, Steps = 1 },
             new Command { Direction = Domain.Model.DirectionEnum.West, Steps = 1 },
         };
@@ -72,6 +74,31 @@ public class CleanServiceTests
         var result = cleanService.SimulateCleaning(start, commands);
 
         // Assert
-        Assert.Equal(5, result);
+        Assert.Equal(4, result);
+    }
+
+    [Fact]
+    public void SimulateCleaning_Circular_Path_2()
+    {
+        // Arrange
+        var cleanRepositoryMock = new Mock<ICleanRepository>();
+        var cleanService = new CleanService(cleanRepositoryMock.Object, Mock.Of<IMapper>(),
+            Mock.Of<ILogger<CleanService>>());
+        var start = new Coordinates { X = 0, Y = 0 };
+        
+        // {0,0}, {0,1}, {0,0}, {1,0}, {0,0}
+        var commands = new List<Command>
+        {
+            new Command { Direction = Domain.Model.DirectionEnum.North, Steps = 1 },
+            new Command { Direction = Domain.Model.DirectionEnum.South, Steps = 1 },
+            new Command { Direction = Domain.Model.DirectionEnum.East, Steps = 1 },
+            new Command { Direction = Domain.Model.DirectionEnum.West, Steps = 1 }
+        };
+
+        // Act
+        var result = cleanService.SimulateCleaning(start, commands);
+
+        // Assert
+        Assert.Equal(3, result);
     }
 }

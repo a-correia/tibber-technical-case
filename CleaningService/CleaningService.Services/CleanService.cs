@@ -59,40 +59,35 @@ public class CleanService : ICleanService
     public int SimulateCleaning(Coordinates start, List<Command> commands)
     {
         var uniquePlaces = new HashSet<Coordinates>();
+        uniquePlaces.Add(new Coordinates { X = start.X, Y = start.Y });
+        
         var currentPosition = start;
-        uniquePlaces.Add(currentPosition);
+        _logger.LogInformation(String.Join("\n", uniquePlaces));
 
         foreach (var command in commands)
         {
-            switch (command.Direction)
+            for (int i = 0; i < command.Steps; i++)
             {
-                case DirectionEnum.North:
-                    CalculateUniquePlaces(currentPosition, command.Steps, uniquePlaces);
-                    currentPosition.X += command.Steps;
-                    break;
-                case DirectionEnum.South:
-                    CalculateUniquePlaces(currentPosition, command.Steps, uniquePlaces);
-                    currentPosition.X -= command.Steps;
-                    break;
-                case DirectionEnum.East:
-                    CalculateUniquePlaces(currentPosition, command.Steps, uniquePlaces);
-                    currentPosition.Y += command.Steps;
-                    break;
-                case DirectionEnum.West:
-                    CalculateUniquePlaces(currentPosition, command.Steps, uniquePlaces);
-                    currentPosition.Y -= command.Steps;
-                    break;
+                switch (command.Direction)
+                {
+                    case DirectionEnum.North:
+                        currentPosition.Y += 1;
+                        break;
+                    case DirectionEnum.South:
+                        currentPosition.Y -= 1;
+                        break;
+                    case DirectionEnum.East:
+                        currentPosition.X += 1;
+                        break;
+                    case DirectionEnum.West:
+                        currentPosition.X -= 1;
+                        break;
+                }
+                uniquePlaces.Add(new Coordinates { X = currentPosition.X, Y = currentPosition.Y });
             }
         }
 
+        _logger.LogInformation(String.Join("\n", uniquePlaces));
         return uniquePlaces.Count;
-    }
-
-    private static void CalculateUniquePlaces(Coordinates currentPosition, int steps, HashSet<Coordinates> uniquePlaces)
-    {
-        for (int i = 0; i < steps; i++)
-        {
-            uniquePlaces.Add(new Coordinates { X = currentPosition.X, Y = currentPosition.Y });
-        }
     }
 }
